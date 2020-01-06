@@ -7,6 +7,7 @@ from math import pi
 import tf.transformations as TR
 from acl_msgs.msg import ViconState
 from nav_msgs.msg import Odometry
+from geometry_msgs.msg import Quaternion
 
 def homogeneous_matrix(trans, quat):
     return TR.concatenate_matrices(TR.translation_matrix(trans), TR.quaternion_matrix(quat))
@@ -16,6 +17,7 @@ class ViconSensor:
         self.subscriber = rospy.Subscriber("vicon", ViconState, self.callback,
             queue_size=1)
         self.reference_pub = rospy.Publisher("reference", Odometry, queue_size=1)
+        self.ext_att_pub = rospy.Publisher("external_attitude", Quaternion, queue_size=1)
         self.T_V_NED = TR.euler_matrix(pi, 0, 0, 'rxyz')
         # self.T_XAV_V = TR.identity_matrix() # from subscriber callback
         self.T_UAV_XAV = TR.euler_matrix(pi, 0, 0, 'rxyz')
@@ -41,7 +43,13 @@ class ViconSensor:
         ref_msg.pose.pose.orientation.y = q[1]
         ref_msg.pose.pose.orientation.z = q[2]
         ref_msg.pose.pose.orientation.w = q[3]
+        att_msg = Quaternion()
+        att_msg.x = q[0]
+        att_msg.y = q[1]
+        att_msg.z = q[2]
+        att_msg.w = q[3]
         self.reference_pub.publish(ref_msg)
+        self.ext_att_pub.publish(att_msg)
 
 def main():
     '''Initialize and cleanup ros node'''
