@@ -7,13 +7,15 @@ class MotorSpeedCalculator(object):
     def __init__(self):
         self.signalSub = rospy.Subscriber('signals', OutputRaw, self.signalCallback)
         self.speedPub = rospy.Publisher('motor_speeds', Actuators, queue_size=1)
-        self.ksr = rospy.get_param('~speed_per_sig', 0.0)
+        self.kop = rospy.get_param('~motor/k_omega_poly')
 
     def signalCallback(self, msg):
         actuators_msg = Actuators()
         actuators_msg.header = msg.header
         for i in range(4):
-            actuators_msg.angular_velocities[i] = self.ksr * msg.values[i]
+            s = msg.values[i]
+            w = self.kop[0] * s + self.kop[1] # calculate motor speed
+            actuators_msg.angular_velocities.append(w)
         self.speedPub.publish(actuators_msg)
 
 if __name__ == '__main__':
