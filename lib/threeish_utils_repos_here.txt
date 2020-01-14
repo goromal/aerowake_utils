@@ -1,0 +1,1 @@
+make the three libs available to the catkin workspace, with their standard names for the *_dynamics nodes to grab from (again, in a standardized way)

@@ -20,6 +20,14 @@ find_package(catkin REQUIRED COMPONENTS
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
+include_directories(lib/geometry-utils-lib/include)
+add_subdirectory(lib/geometry-utils-lib)
+
+include_directories(lib/logging-utils-lib/include)
+add_subdirectory(lib/logging-utils-lib)
+
+include_directories(lib/math-utils-lib/include)
+add_subdirectory(lib/math-utils-lib)
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -122,6 +130,13 @@ catkin_package(
 include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
+)
+
+add_library(aerowake-utils-lib INTERFACE)
+target_link_libraries(aerowake-utils-lib INTERFACE
+  geometry-utils-lib
+  logging-utils-lib
+  math-utils-lib
 )
 
 ## Declare a C++ library
