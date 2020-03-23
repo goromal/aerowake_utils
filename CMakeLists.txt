@@ -12,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   nav_msgs
   roscpp
   rosflight_msgs
+  ublox_msgs
   rospy
   sensor_msgs
   std_msgs
